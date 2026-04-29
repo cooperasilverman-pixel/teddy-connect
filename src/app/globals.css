@@ -1,26 +1,112 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #e8f5e9;
+  --foreground: #2d3748;
+  --primary: #6ABF4B;
+  --primary-dark: #5aa83f;
+  --secondary: #8B4513;
+  --accent: #e53935;
+  --pink: #fbb6ce;
+  --purple: #b794f4;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-pink: var(--pink);
+  --color-purple: var(--purple);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
+
+/* Fun gradient backgrounds */
+.gradient-warm {
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+}
+
+.gradient-fun {
+  background: linear-gradient(135deg, #fbb6ce 0%, #b794f4 50%, #63b3ed 100%);
+}
+
+/* Friendly button styles */
+.btn-primary {
+  background: linear-gradient(135deg, #6ABF4B 0%, #5aa83f 100%);
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(106, 191, 75, 0.4);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(106, 191, 75, 0.5);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #C41E3A 0%, #a01830 100%);
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(196, 30, 58, 0.4);
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(196, 30, 58, 0.5);
+}
+
+/* Card styles */
+.card {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* Fun decorative elements */
+.blob {
+  border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+  animation: blob-morph 8s ease-in-out infinite;
+}
+
+@keyframes blob-morph {
+  0%, 100% {
+    border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+  }
+  50% {
+    border-radius: 58% 42% 30% 70% / 55% 55% 45% 45%;
+  }
+}
+
+/* Heart branching off Y */
+.teddy-heart {
+  position: relative;
+  display: inline-block;
+}
+
+.teddy-heart::after {
+  content: '♥';
+  position: absolute;
+  top: 0.05em;
+  right: -0.15em;
+  font-size: 0.35em;
+  color: #C41E3A;
+  transform: rotate(25deg);
+  display: block;
+}
+
