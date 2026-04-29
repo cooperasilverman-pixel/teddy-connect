@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
 import AddChildModal from "@/components/AddChildModal";
 import SchedulePlaydateModal from "@/components/SchedulePlaydateModal";
+import ThemeToggle from "@/components/ThemeToggle";
 
 interface Child {
   id: string;
@@ -59,6 +60,24 @@ function formatTime(timeStr: string): string {
   return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
 }
 
+function googleCalendarUrl(playdate: Playdate): string {
+  const [year, month, day] = playdate.scheduled_date.split("-").map(Number);
+  const [hour, minute] = playdate.scheduled_time.split(":").map(Number);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const dt = `${year}${pad(month)}${pad(day)}T${pad(hour)}${pad(minute)}00`;
+  const dtEnd = `${year}${pad(month)}${pad(hour + 1)}${pad(minute)}00`;
+  const name1 = playdate.proposerChild?.display_name ?? "";
+  const name2 = playdate.inviteeChild?.display_name ?? "";
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: `Playdate: ${name1} & ${name2}`,
+    dates: `${dt}/${dtEnd}`,
+    details: "Arranged through Teddy Connect",
+    location: playdate.location ?? "",
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
 function downloadICS(playdate: Playdate) {
   const [year, month, day] = playdate.scheduled_date.split("-").map(Number);
   const [hour, minute] = playdate.scheduled_time.split(":").map(Number);
@@ -109,6 +128,18 @@ export default function Dashboard() {
   const [playdatePreselectedChildId, setPlaydatePreselectedChildId] = useState<string | null>(null);
   const [respondingId, setRespondingId] = useState<string | null>(null);
   const [respondingPlaydateId, setRespondingPlaydateId] = useState<string | null>(null);
+  const [calendarDropdownId, setCalendarDropdownId] = useState<string | null>(null);
+  const calendarDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (calendarDropdownRef.current && !calendarDropdownRef.current.contains(e.target as Node)) {
+        setCalendarDropdownId(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const fetchChildren = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -312,17 +343,18 @@ export default function Dashboard() {
   const upcomingConfirmedPlaydates = playdates.filter((p) => p.status === "confirmed");
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Navigation */}
-      <nav className="bg-white shadow-sm">
+      <nav className="bg-white dark:bg-gray-900 shadow-sm">
         <div className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto">
           <Link href="/" className="flex items-center gap-2">
             <span className="text-3xl">🧸</span>
             <span className="text-xl font-bold text-orange-600">Teddy Connect</span>
           </Link>
           <div className="flex items-center gap-4">
-            <span className="text-gray-600">Hi, {parentName}</span>
-            <button onClick={handleLogout} className="text-gray-500 hover:text-gray-700">Log out</button>
+            <span className="text-gray-600 dark:text-gray-300">Hi, {parentName}</span>
+            <ThemeToggle />
+            <button onClick={handleLogout} className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">Log out</button>
           </div>
         </div>
       </nav>
@@ -330,33 +362,33 @@ export default function Dashboard() {
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-6 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Family Dashboard</h1>
-          <p className="text-gray-600">Manage your children&apos;s profiles and connections</p>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">Family Dashboard</h1>
+          <p className="text-gray-600 dark:text-gray-400">Manage your children&apos;s profiles and connections</p>
         </div>
 
         {/* Quick Stats */}
         <div className="grid md:grid-cols-3 gap-4 mb-8">
-          <div className="card bg-orange-50 border border-orange-100">
+          <div className="card bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-900/30">
             <div className="text-3xl mb-2">👧</div>
-            <div className="text-2xl font-bold text-gray-800">{children.length}</div>
-            <div className="text-gray-600">Children</div>
+            <div className="text-2xl font-bold text-gray-800 dark:text-gray-100">{children.length}</div>
+            <div className="text-gray-600 dark:text-gray-400">Children</div>
           </div>
-          <div className="card bg-green-50 border border-green-100">
+          <div className="card bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-900/30">
             <div className="text-3xl mb-2">🤝</div>
-            <div className="text-2xl font-bold text-gray-800">{approvedFriendships.length}</div>
-            <div className="text-gray-600">Total Friends</div>
+            <div className="text-2xl font-bold text-gray-800 dark:text-gray-100">{approvedFriendships.length}</div>
+            <div className="text-gray-600 dark:text-gray-400">Total Friends</div>
           </div>
-          <div className="card bg-blue-50 border border-blue-100">
+          <div className="card bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/30">
             <div className="text-3xl mb-2">✉️</div>
-            <div className="text-2xl font-bold text-gray-800">{pendingRequests.length}</div>
-            <div className="text-gray-600">Pending Requests</div>
+            <div className="text-2xl font-bold text-gray-800 dark:text-gray-100">{pendingRequests.length}</div>
+            <div className="text-gray-600 dark:text-gray-400">Pending Requests</div>
           </div>
         </div>
 
         {/* Pending Friend Requests */}
         {pendingRequests.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">Pending Friend Requests</h2>
+            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">Pending Friend Requests</h2>
             <div className="card divide-y divide-gray-100">
               {pendingRequests.map((req) => (
                 <div key={req.id} className="flex items-center justify-between py-4 gap-4">
@@ -365,13 +397,13 @@ export default function Dashboard() {
                       {req.requester?.avatar}
                     </div>
                     <div>
-                      <p className="font-medium text-gray-800">
+                      <p className="font-medium text-gray-800 dark:text-gray-100">
                         <span className="text-blue-600">{req.requester?.display_name}</span>
                         {" wants to be friends with "}
                         <span className="text-green-600">{req.recipient?.display_name}</span>
                       </p>
                       {req.requester?.interests?.length > 0 && (
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
                           Interests: {req.requester.interests.slice(0, 3).join(", ")}
                         </p>
                       )}
@@ -404,7 +436,7 @@ export default function Dashboard() {
           pendingSentPlaydates.length > 0 ||
           upcomingConfirmedPlaydates.length > 0) && (
           <div className="mb-8">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">Playdates</h2>
+            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">Playdates</h2>
 
             {/* Received invites */}
             {pendingReceivedPlaydates.length > 0 && (
@@ -417,17 +449,17 @@ export default function Dashboard() {
                         {p.proposerChild?.avatar}
                       </div>
                       <div>
-                        <p className="font-medium text-gray-800">
+                        <p className="font-medium text-gray-800 dark:text-gray-100">
                           <span className="text-purple-600">{p.proposerChild?.display_name}</span>
                           {" wants a playdate with "}
                           <span className="text-green-600">{p.inviteeChild?.display_name}</span>
                         </p>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
                           {formatDate(p.scheduled_date)} at {formatTime(p.scheduled_time)}
                           {p.location ? ` · ${p.location}` : ""}
                         </p>
                         {p.notes && (
-                          <p className="text-xs text-gray-400 italic">&quot;{p.notes}&quot;</p>
+                          <p className="text-xs text-gray-400 dark:text-gray-500 italic">&quot;{p.notes}&quot;</p>
                         )}
                       </div>
                     </div>
@@ -463,24 +495,45 @@ export default function Dashboard() {
                         📅
                       </div>
                       <div>
-                        <p className="font-medium text-gray-800">
+                        <p className="font-medium text-gray-800 dark:text-gray-100">
                           <span className="text-orange-600">{p.proposerChild?.display_name}</span>
                           {" & "}
                           <span className="text-orange-600">{p.inviteeChild?.display_name}</span>
                         </p>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
                           {formatDate(p.scheduled_date)} at {formatTime(p.scheduled_time)}
                           {p.location ? ` · ${p.location}` : ""}
                         </p>
                       </div>
                     </div>
-                    <div className="flex gap-2 flex-shrink-0">
-                      <button
-                        onClick={() => downloadICS(p)}
-                        className="px-3 py-1.5 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
-                      >
-                        📅 Add to Calendar
-                      </button>
+                    <div className="flex gap-2 flex-shrink-0 items-center">
+                      <div className="relative" ref={calendarDropdownId === p.id ? calendarDropdownRef : undefined}>
+                        <button
+                          onClick={() => setCalendarDropdownId(calendarDropdownId === p.id ? null : p.id)}
+                          className="px-3 py-1.5 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
+                        >
+                          📅 Add to Calendar ▾
+                        </button>
+                        {calendarDropdownId === p.id && (
+                          <div className="absolute right-0 mt-1 w-44 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg z-10 overflow-hidden">
+                            <a
+                              href={googleCalendarUrl(p)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={() => setCalendarDropdownId(null)}
+                              className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                            >
+                              <span>🗓</span> Google Calendar
+                            </a>
+                            <button
+                              onClick={() => { downloadICS(p); setCalendarDropdownId(null); }}
+                              className="w-full flex items-center gap-2 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                            >
+                              <span>🍎</span> Apple Calendar
+                            </button>
+                          </div>
+                        )}
+                      </div>
                       {myChildIds.has(p.proposer_child_id) && (
                         <button
                           onClick={() => respondToPlaydate(p.id, "cancelled")}
@@ -507,10 +560,10 @@ export default function Dashboard() {
                         {p.inviteeChild?.avatar}
                       </div>
                       <div>
-                        <p className="font-medium text-gray-800">
+                        <p className="font-medium text-gray-800 dark:text-gray-100">
                           Waiting for {p.inviteeChild?.display_name}&apos;s family to respond
                         </p>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
                           {formatDate(p.scheduled_date)} at {formatTime(p.scheduled_time)}
                           {p.location ? ` · ${p.location}` : ""}
                         </p>
@@ -533,7 +586,7 @@ export default function Dashboard() {
         {/* Children Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-gray-800">Your Children</h2>
+            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Your Children</h2>
             <button onClick={() => setShowAddModal(true)} className="btn-primary">+ Add Child</button>
           </div>
 
@@ -545,8 +598,8 @@ export default function Dashboard() {
                     {child.avatar}
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-800">{child.display_name}</h3>
-                    <p className="text-gray-500">{child.age} years old</p>
+                    <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{child.display_name}</h3>
+                    <p className="text-gray-500 dark:text-gray-400">{child.age} years old</p>
                   </div>
                 </div>
 
@@ -561,11 +614,11 @@ export default function Dashboard() {
                 )}
 
                 {child.communication_style && (
-                  <p className="text-sm text-gray-500 mb-4">{child.communication_style}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{child.communication_style}</p>
                 )}
 
                 {child.bio && (
-                  <p className="text-sm text-gray-600 italic mb-4">&quot;{child.bio}&quot;</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 italic mb-4">&quot;{child.bio}&quot;</p>
                 )}
 
                 <div className="flex gap-2 flex-wrap">
@@ -599,11 +652,11 @@ export default function Dashboard() {
             {/* Add Child Card */}
             <div
               onClick={() => setShowAddModal(true)}
-              className="card border-2 border-dashed border-gray-200 flex items-center justify-center min-h-[200px] hover:border-green-300 hover:bg-green-50 transition-colors cursor-pointer"
+              className="card border-2 border-dashed border-gray-200 dark:border-gray-700 flex items-center justify-center min-h-[200px] hover:border-green-300 hover:bg-green-50 dark:hover:bg-green-900/10 transition-colors cursor-pointer"
             >
               <div className="text-center">
                 <div className="text-4xl mb-2">➕</div>
-                <p className="text-gray-600 font-medium">Add a Child</p>
+                <p className="text-gray-600 dark:text-gray-400 font-medium">Add a Child</p>
               </div>
             </div>
           </div>
@@ -613,8 +666,8 @@ export default function Dashboard() {
         {children.length === 0 && (
           <div className="card text-center py-12 mb-8">
             <div className="text-5xl mb-4">🧸</div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">No children added yet</h3>
-            <p className="text-gray-600 mb-6">Add your child&apos;s profile to start finding friends!</p>
+            <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">No children added yet</h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">Add your child&apos;s profile to start finding friends!</p>
             <button onClick={() => setShowAddModal(true)} className="btn-primary px-8 py-3">
               + Add Your First Child
             </button>

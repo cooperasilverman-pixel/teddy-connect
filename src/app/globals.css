@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   --background: #e8f5e9;
@@ -9,6 +10,11 @@
   --accent: #e53935;
   --pink: #fbb6ce;
   --purple: #b794f4;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
 }
 
 @theme inline {
@@ -33,6 +39,10 @@ body {
 /* Fun gradient backgrounds */
 .gradient-warm {
   background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+}
+
+.dark .gradient-warm {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
 }
 
 .gradient-fun {
@@ -76,6 +86,11 @@ body {
   border-radius: 1.5rem;
   padding: 2rem;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+}
+
+.dark .card {
+  background: #1e293b;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
 
 /* Fun decorative elements */

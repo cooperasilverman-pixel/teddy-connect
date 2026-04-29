@@ -86,8 +86,8 @@ export default function Register() {
       <main className="flex-1 flex items-center justify-center px-6 py-12">
         <div className="card w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">Create Your Family Account</h1>
-            <p className="text-gray-600">Join thousands of families building friendships</p>
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">Create Your Family Account</h1>
+            <p className="text-gray-600 dark:text-gray-400">Join thousands of families building friendships</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -104,7 +104,7 @@ export default function Register() {
             )}
 
             <div>
-              <label htmlFor="parentName" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="parentName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Your Name (Parent/Guardian)
               </label>
               <input
@@ -113,14 +113,14 @@ export default function Register() {
                 type="text"
                 value={formData.parentName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
                 placeholder="Your name"
                 required
               />
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Email Address
               </label>
               <input
@@ -129,14 +129,14 @@ export default function Register() {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
                 placeholder="parent@email.com"
                 required
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Password
               </label>
               <input
@@ -145,7 +145,7 @@ export default function Register() {
                 type="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
                 placeholder="Create a strong password"
                 required
                 minLength={8}
@@ -153,7 +153,7 @@ export default function Register() {
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Confirm Password
               </label>
               <input
@@ -162,13 +162,13 @@ export default function Register() {
                 type="password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
                 placeholder="Confirm your password"
                 required
               />
             </div>
 
-            <div className="bg-blue-50 rounded-xl p-4">
+            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4">
               <label className="flex items-start gap-3 cursor-pointer">
                 <input
                   type="checkbox"
@@ -178,7 +178,7 @@ export default function Register() {
                   className="w-5 h-5 mt-0.5 text-orange-500 rounded"
                   required
                 />
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-gray-600 dark:text-gray-300">
                   I am the parent or legal guardian. I agree to the{" "}
                   <Link href="/terms" className="text-orange-600 hover:underline">
                     Terms of Service
@@ -202,7 +202,7 @@ export default function Register() {
           </form>
 
           <div className="mt-8 text-center">
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-400">
               Already have an account?{" "}
               <Link href="/login" className="text-orange-600 font-medium hover:text-orange-700">
                 Log in

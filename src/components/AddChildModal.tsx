@@ -118,12 +118,12 @@ export default function AddChildModal({ isOpen, onClose, onChildAdded }: AddChil
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={handleClose}>
       <div className="absolute inset-0 bg-black/40" />
       <div
-        className="relative bg-white rounded-3xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-8"
+        className="relative bg-white dark:bg-gray-800 rounded-3xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-8"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Add a Child</h2>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Add a Child</h2>
           <button onClick={handleClose} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
         </div>
 
@@ -149,19 +149,19 @@ export default function AddChildModal({ isOpen, onClose, onChildAdded }: AddChil
         {step === 1 && (
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Display Name</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Display Name</label>
               <input
                 type="text"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-green-400 focus:ring-2 focus:ring-green-100 outline-none transition-all"
                 placeholder="A fun nickname for your child"
                 maxLength={30}
               />
               <p className="text-xs text-gray-400 mt-1">This is what other kids will see (not their real name)</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Age</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Age</label>
               <select
                 value={age}
                 onChange={(e) => setAge(e.target.value ? Number(e.target.value) : "")}
@@ -179,7 +179,7 @@ export default function AddChildModal({ isOpen, onClose, onChildAdded }: AddChil
         {/* Step 2: Avatar */}
         {step === 2 && (
           <div>
-            <p className="text-gray-600 mb-4">Pick an avatar for your child</p>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">Pick an avatar for your child</p>
             <div className="grid grid-cols-4 gap-3">
               {AVATARS.map((a) => (
                 <button
@@ -188,7 +188,7 @@ export default function AddChildModal({ isOpen, onClose, onChildAdded }: AddChil
                   className={`text-4xl p-3 rounded-2xl transition-all ${
                     avatar === a
                       ? "bg-green-100 ring-2 ring-green-400 scale-110"
-                      : "bg-gray-50 hover:bg-gray-100"
+                      : "bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
                   }`}
                 >
                   {a}
@@ -201,7 +201,7 @@ export default function AddChildModal({ isOpen, onClose, onChildAdded }: AddChil
         {/* Step 3: Interests */}
         {step === 3 && (
           <div>
-            <p className="text-gray-600 mb-4">What does your child enjoy? (pick at least 1)</p>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">What does your child enjoy? (pick at least 1)</p>
             <div className="grid grid-cols-3 gap-3">
               {INTERESTS.map((interest) => (
                 <button
@@ -210,7 +210,7 @@ export default function AddChildModal({ isOpen, onClose, onChildAdded }: AddChil
                   className={`flex flex-col items-center gap-1 p-3 rounded-2xl text-sm font-medium transition-all ${
                     interests.includes(interest.label)
                       ? "bg-green-100 ring-2 ring-green-400"
-                      : "bg-gray-50 hover:bg-gray-100"
+                      : "bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
                   }`}
                 >
                   <span className="text-2xl">{interest.emoji}</span>
@@ -234,20 +234,20 @@ export default function AddChildModal({ isOpen, onClose, onChildAdded }: AddChil
                     className={`flex items-center gap-3 p-4 rounded-xl text-left transition-all ${
                       communicationStyle === style.label
                         ? "bg-green-100 ring-2 ring-green-400"
-                        : "bg-gray-50 hover:bg-gray-100"
+                        : "bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
                     }`}
                   >
                     <span className="text-2xl">{style.emoji}</span>
                     <div>
-                      <p className="font-medium text-gray-800">{style.label}</p>
-                      <p className="text-xs text-gray-500">{style.description}</p>
+                      <p className="font-medium text-gray-800 dark:text-gray-100">{style.label}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{style.description}</p>
                     </div>
                   </button>
                 ))}
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Short Bio (optional)</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Short Bio (optional)</label>
               <textarea
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}

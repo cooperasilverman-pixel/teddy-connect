@@ -108,16 +108,16 @@ function FindFriendsInner() {
   return (
     <div className="min-h-screen gradient-warm">
       {/* Nav */}
-      <nav className="bg-white shadow-sm">
+      <nav className="bg-white dark:bg-gray-900 shadow-sm">
         <div className="flex items-center gap-4 px-6 py-4 max-w-5xl mx-auto">
-          <Link href="/dashboard" className="text-gray-500 hover:text-gray-700 text-sm font-medium">
+          <Link href="/dashboard" className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 text-sm font-medium">
             ← Back
           </Link>
           {myChild && (
             <div className="flex items-center gap-3">
               <span className="text-2xl">{myChild.avatar}</span>
               <div>
-                <p className="font-bold text-gray-800">Finding friends for {myChild.display_name}</p>
+                <p className="font-bold text-gray-800 dark:text-gray-100">Finding friends for {myChild.display_name}</p>
                 <p className="text-xs text-gray-500">{myChild.age} years old</p>
               </div>
             </div>
@@ -126,7 +126,7 @@ function FindFriendsInner() {
       </nav>
 
       <main className="max-w-5xl mx-auto px-6 py-10">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Friend Suggestions</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">Friend Suggestions</h1>
         <p className="text-gray-500 mb-8">Matches are ranked by shared interests and communication style.</p>
 
         {sendError && (
@@ -164,7 +164,7 @@ function FindFriendsInner() {
                         ? "bg-green-100 text-green-700"
                         : match.sharedInterests.length >= 1
                         ? "bg-yellow-100 text-yellow-700"
-                        : "bg-gray-100 text-gray-600"
+                        : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
                     }`}>
                       <p className="text-xl font-bold">{match.sharedInterests.length}/{maxScore}</p>
                       <p className="text-xs">interests</p>
@@ -180,7 +180,7 @@ function FindFriendsInner() {
                         </span>
                       ))}
                       {otherInterests.map((i) => (
-                        <span key={i} className="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded-full">
+                        <span key={i} className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-2 py-1 rounded-full">
                           {i}
                         </span>
                       ))}

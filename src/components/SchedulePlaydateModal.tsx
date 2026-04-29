@@ -104,12 +104,12 @@ export default function SchedulePlaydateModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/40" />
       <div
-        className="relative bg-white rounded-3xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-8"
+        className="relative bg-white dark:bg-gray-800 rounded-3xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-8"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Schedule a Playdate</h2>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Schedule a Playdate</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
         </div>
 
@@ -122,11 +122,11 @@ export default function SchedulePlaydateModal({
         <div className="space-y-5">
           {/* My child */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Your child</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Your child</label>
             <select
               value={selectedMyChildId}
               onChange={(e) => setSelectedMyChildId(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 outline-none transition-all bg-white"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-green-400 focus:ring-2 focus:ring-green-100 outline-none transition-all"
             >
               {myChildren.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -138,9 +138,9 @@ export default function SchedulePlaydateModal({
 
           {/* Friend to invite */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Invite a friend</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Invite a friend</label>
             {friendsForSelectedChild.length === 0 ? (
-              <p className="text-sm text-gray-400 px-4 py-3 bg-gray-50 rounded-xl">
+              <p className="text-sm text-gray-400 dark:text-gray-500 px-4 py-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
                 {selectedMyChildId
                   ? "This child has no approved friends yet. Find friends first!"
                   : "Select a child above."}
@@ -149,7 +149,7 @@ export default function SchedulePlaydateModal({
               <select
                 value={selectedFriendId}
                 onChange={(e) => setSelectedFriendId(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 outline-none transition-all bg-white"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-green-400 focus:ring-2 focus:ring-green-100 outline-none transition-all"
               >
                 <option value="">Select a friend…</option>
                 {friendsForSelectedChild.map((f) => (
@@ -163,30 +163,30 @@ export default function SchedulePlaydateModal({
 
           {/* Date */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Date</label>
             <input
               type="date"
               value={scheduledDate}
               min={todayStr}
               onChange={(e) => setScheduledDate(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 outline-none transition-all"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-green-400 focus:ring-2 focus:ring-green-100 outline-none transition-all"
             />
           </div>
 
           {/* Time */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Time</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Time</label>
             <input
               type="time"
               value={scheduledTime}
               onChange={(e) => setScheduledTime(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 outline-none transition-all"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-green-400 focus:ring-2 focus:ring-green-100 outline-none transition-all"
             />
           </div>
 
           {/* Location (optional) */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Location <span className="font-normal text-gray-400">(optional)</span>
             </label>
             <input
@@ -195,13 +195,13 @@ export default function SchedulePlaydateModal({
               onChange={(e) => setLocation(e.target.value)}
               maxLength={100}
               placeholder="e.g. Riverside Park, our house…"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 outline-none transition-all"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-green-400 focus:ring-2 focus:ring-green-100 outline-none transition-all"
             />
           </div>
 
           {/* Notes (optional) */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Notes <span className="font-normal text-gray-400">(optional)</span>
             </label>
             <textarea

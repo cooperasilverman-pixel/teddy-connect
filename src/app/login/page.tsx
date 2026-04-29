@@ -52,8 +52,8 @@ export default function Login() {
       <main className="flex-1 flex items-center justify-center px-6 py-12">
         <div className="card w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome Back!</h1>
-            <p className="text-gray-600">Log in to your family account</p>
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">Welcome Back!</h1>
+            <p className="text-gray-600 dark:text-gray-400">Log in to your family account</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -64,7 +64,7 @@ export default function Login() {
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Email Address
               </label>
               <input
@@ -72,14 +72,14 @@ export default function Login() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
                 placeholder="parent@email.com"
                 required
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Password
               </label>
               <input
@@ -87,7 +87,7 @@ export default function Login() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
                 placeholder="Your password"
                 required
               />
@@ -96,7 +96,7 @@ export default function Login() {
             <div className="flex items-center justify-between">
               <label className="flex items-center">
                 <input type="checkbox" className="w-4 h-4 text-orange-500 rounded" />
-                <span className="ml-2 text-sm text-gray-600">Remember me</span>
+                <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Remember me</span>
               </label>
               <Link href="/forgot-password" className="text-sm text-orange-600 hover:text-orange-700">
                 Forgot password?
@@ -113,7 +113,7 @@ export default function Login() {
           </form>
 
           <div className="mt-8 text-center">
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-400">
               Don&apos;t have an account?{" "}
               <Link href="/register" className="text-orange-600 font-medium hover:text-orange-700">
                 Sign up free

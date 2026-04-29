@@ -24,11 +24,11 @@ export default function Home() {
         <div className="flex flex-col lg:flex-row items-center gap-12">
           {/* Left side - Text content */}
           <div className="flex-1 text-center lg:text-left">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 leading-tight mb-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 dark:text-gray-100 leading-tight mb-6">
               Staying Connected Through the
               <span style={{ color: '#C41E3A', fontFamily: 'var(--font-pacifico)' }}> Comfort of Tedd<span className="teddy-heart">y</span></span>
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-xl">
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-xl">
               Teddy Connect helps kids with communication challenges find friends
               who understand them. Through fun activities, shared interests, and
               safe conversations.
@@ -56,12 +56,12 @@ export default function Home() {
       </main>
 
       {/* How it Works Section */}
-      <section id="how-it-works" className="py-20 bg-white">
+      <section id="how-it-works" className="py-20 bg-white dark:bg-gray-900">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 dark:text-gray-100 mb-4">
             How Teddy Connect Works
           </h2>
-          <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+          <p className="text-gray-600 dark:text-gray-400 text-center mb-12 max-w-2xl mx-auto">
             Making friends has never been safer or more fun
           </p>
 
@@ -71,8 +71,8 @@ export default function Home() {
               <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl">👨‍👩‍👧</span>
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Parents Sign Up</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Parents Sign Up</h3>
+              <p className="text-gray-600 dark:text-gray-400">
                 Parents create an account and set up profiles for their children
                 with interests and preferences.
               </p>
@@ -83,8 +83,8 @@ export default function Home() {
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl">🎯</span>
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Find Matches</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Find Matches</h3>
+              <p className="text-gray-600 dark:text-gray-400">
                 We suggest friends based on shared interests like games, art,
                 animals, or music. Parents approve all connections.
               </p>
@@ -95,8 +95,8 @@ export default function Home() {
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl">💬</span>
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Connect Safely</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Connect Safely</h3>
+              <p className="text-gray-600 dark:text-gray-400">
                 Kids chat using pre-approved messages, emojis, and stickers.
                 No pressure, just fun ways to communicate.
               </p>
@@ -108,7 +108,7 @@ export default function Home() {
       {/* Features Section */}
       <section className="py-20 gradient-warm">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 dark:text-gray-100 mb-12">
             Built for Every Child
           </h2>
 
@@ -116,8 +116,8 @@ export default function Home() {
             <div className="card flex gap-4">
               <div className="text-4xl">🎨</div>
               <div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">Visual Communication</h3>
-                <p className="text-gray-600">
+                <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Visual Communication</h3>
+                <p className="text-gray-600 dark:text-gray-400">
                   Express yourself with pictures, stickers, and emojis.
                   Words are optional here.
                 </p>
@@ -127,8 +127,8 @@ export default function Home() {
             <div className="card flex gap-4">
               <div className="text-4xl">🎮</div>
               <div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">Fun Activities</h3>
-                <p className="text-gray-600">
+                <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Fun Activities</h3>
+                <p className="text-gray-600 dark:text-gray-400">
                   Structured games and prompts make starting conversations easy and stress-free.
                 </p>
               </div>
@@ -137,8 +137,8 @@ export default function Home() {
             <div className="card flex gap-4">
               <div className="text-4xl">🔒</div>
               <div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">Parent Dashboard</h3>
-                <p className="text-gray-600">
+                <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Parent Dashboard</h3>
+                <p className="text-gray-600 dark:text-gray-400">
                   Full visibility into your child&apos;s activity. Approve friends,
                   review messages, and set preferences.
                 </p>
@@ -148,8 +148,8 @@ export default function Home() {
             <div className="card flex gap-4">
               <div className="text-4xl">🌟</div>
               <div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">Age-Appropriate</h3>
-                <p className="text-gray-600">
+                <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Age-Appropriate</h3>
+                <p className="text-gray-600 dark:text-gray-400">
                   Separate experiences for different age groups: 5-7, 8-10, and 11-13.
                 </p>
               </div>
@@ -159,7 +159,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white dark:bg-gray-900">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
             Ready to Help Your Child Make Friends?
