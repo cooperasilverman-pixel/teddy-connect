@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
 import AddChildModal from "@/components/AddChildModal";
+import SchedulePlaydateModal from "@/components/SchedulePlaydateModal";
 
 interface Child {
   id: string;
@@ -27,14 +28,50 @@ interface FriendRequest {
   recipient: Child;
 }
 
+interface ApprovedFriendship {
+  id: string;
+  myChildId: string;
+  friendChild: Child;
+}
+
+interface Playdate {
+  id: string;
+  proposer_child_id: string;
+  invitee_child_id: string;
+  scheduled_date: string;
+  scheduled_time: string;
+  location: string | null;
+  notes: string | null;
+  status: "pending" | "confirmed" | "declined" | "cancelled";
+  proposerChild: Child;
+  inviteeChild: Child;
+}
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr + "T00:00:00");
+  return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+}
+
+function formatTime(timeStr: string): string {
+  const [h, m] = timeStr.split(":");
+  const d = new Date();
+  d.setHours(Number(h), Number(m));
+  return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+}
+
 export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [children, setChildren] = useState<Child[]>([]);
   const [pendingRequests, setPendingRequests] = useState<FriendRequest[]>([]);
+  const [approvedFriendships, setApprovedFriendships] = useState<ApprovedFriendship[]>([]);
+  const [playdates, setPlaydates] = useState<Playdate[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showPlaydateModal, setShowPlaydateModal] = useState(false);
+  const [playdatePreselectedChildId, setPlaydatePreselectedChildId] = useState<string | null>(null);
   const [respondingId, setRespondingId] = useState<string | null>(null);
+  const [respondingPlaydateId, setRespondingPlaydateId] = useState<string | null>(null);
 
   const fetchChildren = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -51,7 +88,6 @@ export default function Dashboard() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    // Get IDs of this parent's children
     const { data: myKids } = await supabase
       .from("children")
       .select("id")
@@ -61,7 +97,6 @@ export default function Dashboard() {
 
     const myKidIds = myKids.map((k) => k.id);
 
-    // Get pending requests where one of my kids is the recipient (child_id_2)
     const { data: requests } = await supabase
       .from("friendships")
       .select("*")
@@ -73,7 +108,6 @@ export default function Dashboard() {
       return;
     }
 
-    // Fetch the requester and recipient child details
     const allChildIds = [
       ...new Set(requests.flatMap((r) => [r.child_id_1, r.child_id_2])),
     ];
@@ -93,6 +127,83 @@ export default function Dashboard() {
     setPendingRequests(enriched);
   }, []);
 
+  const fetchApprovedFriendships = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data: myKids } = await supabase
+      .from("children")
+      .select("id")
+      .eq("user_id", user.id);
+
+    if (!myKids?.length) { setApprovedFriendships([]); return; }
+    const myKidIds = myKids.map((k) => k.id);
+
+    const { data: friendships } = await supabase
+      .from("friendships")
+      .select("id, child_id_1, child_id_2")
+      .eq("status", "approved")
+      .or(`child_id_1.in.(${myKidIds.join(",")}),child_id_2.in.(${myKidIds.join(",")})`);
+
+    if (!friendships?.length) { setApprovedFriendships([]); return; }
+
+    const friendChildIds = friendships.map((f) =>
+      myKidIds.includes(f.child_id_1) ? f.child_id_2 : f.child_id_1
+    );
+    const { data: friendChildren } = await supabase
+      .from("children")
+      .select("*")
+      .in("id", [...new Set(friendChildIds)]);
+
+    const childMap = Object.fromEntries((friendChildren ?? []).map((c) => [c.id, c]));
+
+    const enriched: ApprovedFriendship[] = friendships.map((f) => {
+      const myChildId = myKidIds.includes(f.child_id_1) ? f.child_id_1 : f.child_id_2;
+      const friendChildId = myChildId === f.child_id_1 ? f.child_id_2 : f.child_id_1;
+      return { id: f.id, myChildId, friendChild: childMap[friendChildId] };
+    });
+    setApprovedFriendships(enriched);
+  }, []);
+
+  const fetchPlaydates = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data: myKids } = await supabase
+      .from("children")
+      .select("id")
+      .eq("user_id", user.id);
+
+    if (!myKids?.length) { setPlaydates([]); return; }
+    const myKidIds = myKids.map((k) => k.id);
+
+    const { data: rows } = await supabase
+      .from("playdates")
+      .select("*")
+      .in("status", ["pending", "confirmed"])
+      .or(`proposer_child_id.in.(${myKidIds.join(",")}),invitee_child_id.in.(${myKidIds.join(",")})`)
+      .order("scheduled_date", { ascending: true })
+      .order("scheduled_time", { ascending: true });
+
+    if (!rows?.length) { setPlaydates([]); return; }
+
+    const allChildIds = [...new Set(rows.flatMap((r) => [r.proposer_child_id, r.invitee_child_id]))];
+    const { data: childDetails } = await supabase
+      .from("children")
+      .select("*")
+      .in("id", allChildIds);
+
+    const childMap = Object.fromEntries((childDetails ?? []).map((c) => [c.id, c]));
+
+    setPlaydates(
+      rows.map((r) => ({
+        ...r,
+        proposerChild: childMap[r.proposer_child_id],
+        inviteeChild: childMap[r.invitee_child_id],
+      }))
+    );
+  }, []);
+
   useEffect(() => {
     const checkUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -110,8 +221,10 @@ export default function Dashboard() {
     if (user) {
       fetchChildren();
       fetchPendingRequests();
+      fetchApprovedFriendships();
+      fetchPlaydates();
     }
-  }, [user, fetchChildren, fetchPendingRequests]);
+  }, [user, fetchChildren, fetchPendingRequests, fetchApprovedFriendships, fetchPlaydates]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -128,6 +241,16 @@ export default function Dashboard() {
     setRespondingId(null);
   };
 
+  const respondToPlaydate = async (
+    playdateId: string,
+    status: "confirmed" | "declined" | "cancelled"
+  ) => {
+    setRespondingPlaydateId(playdateId);
+    await supabase.from("playdates").update({ status }).eq("id", playdateId);
+    await fetchPlaydates();
+    setRespondingPlaydateId(null);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -140,6 +263,15 @@ export default function Dashboard() {
   }
 
   const parentName = user?.user_metadata?.parent_name || user?.email?.split("@")[0] || "Parent";
+  const myChildIds = new Set(children.map((c) => c.id));
+
+  const pendingReceivedPlaydates = playdates.filter(
+    (p) => p.status === "pending" && myChildIds.has(p.invitee_child_id)
+  );
+  const pendingSentPlaydates = playdates.filter(
+    (p) => p.status === "pending" && myChildIds.has(p.proposer_child_id)
+  );
+  const upcomingConfirmedPlaydates = playdates.filter((p) => p.status === "confirmed");
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -229,6 +361,129 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* Playdates Section */}
+        {(pendingReceivedPlaydates.length > 0 ||
+          pendingSentPlaydates.length > 0 ||
+          upcomingConfirmedPlaydates.length > 0) && (
+          <div className="mb-8">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Playdates</h2>
+
+            {/* Received invites */}
+            {pendingReceivedPlaydates.length > 0 && (
+              <div className="card mb-4 divide-y divide-gray-100">
+                <p className="text-sm font-semibold text-purple-700 mb-3">Playdate Invites</p>
+                {pendingReceivedPlaydates.map((p) => (
+                  <div key={p.id} className="flex items-center justify-between py-4 gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-2xl">
+                        {p.proposerChild?.avatar}
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800">
+                          <span className="text-purple-600">{p.proposerChild?.display_name}</span>
+                          {" wants a playdate with "}
+                          <span className="text-green-600">{p.inviteeChild?.display_name}</span>
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {formatDate(p.scheduled_date)} at {formatTime(p.scheduled_time)}
+                          {p.location ? ` · ${p.location}` : ""}
+                        </p>
+                        {p.notes && (
+                          <p className="text-xs text-gray-400 italic">&quot;{p.notes}&quot;</p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex gap-2 flex-shrink-0">
+                      <button
+                        onClick={() => respondToPlaydate(p.id, "confirmed")}
+                        disabled={respondingPlaydateId === p.id}
+                        className="px-4 py-2 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 transition-colors disabled:opacity-50"
+                      >
+                        Confirm
+                      </button>
+                      <button
+                        onClick={() => respondToPlaydate(p.id, "declined")}
+                        disabled={respondingPlaydateId === p.id}
+                        className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors disabled:opacity-50"
+                      >
+                        Decline
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Upcoming confirmed playdates */}
+            {upcomingConfirmedPlaydates.length > 0 && (
+              <div className="card mb-4 divide-y divide-gray-100">
+                <p className="text-sm font-semibold text-green-700 mb-3">Upcoming Playdates</p>
+                {upcomingConfirmedPlaydates.map((p) => (
+                  <div key={p.id} className="flex items-center justify-between py-4 gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-2xl">
+                        📅
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800">
+                          <span className="text-orange-600">{p.proposerChild?.display_name}</span>
+                          {" & "}
+                          <span className="text-orange-600">{p.inviteeChild?.display_name}</span>
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {formatDate(p.scheduled_date)} at {formatTime(p.scheduled_time)}
+                          {p.location ? ` · ${p.location}` : ""}
+                        </p>
+                      </div>
+                    </div>
+                    {myChildIds.has(p.proposer_child_id) && (
+                      <button
+                        onClick={() => respondToPlaydate(p.id, "cancelled")}
+                        disabled={respondingPlaydateId === p.id}
+                        className="px-3 py-1.5 text-xs bg-gray-100 text-gray-500 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Sent / awaiting response */}
+            {pendingSentPlaydates.length > 0 && (
+              <div className="card divide-y divide-gray-100">
+                <p className="text-sm font-semibold text-gray-500 mb-3">Sent Invites</p>
+                {pendingSentPlaydates.map((p) => (
+                  <div key={p.id} className="flex items-center justify-between py-4 gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center text-2xl">
+                        {p.inviteeChild?.avatar}
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800">
+                          Waiting for {p.inviteeChild?.display_name}&apos;s family to respond
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {formatDate(p.scheduled_date)} at {formatTime(p.scheduled_time)}
+                          {p.location ? ` · ${p.location}` : ""}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => respondToPlaydate(p.id, "cancelled")}
+                      disabled={respondingPlaydateId === p.id}
+                      className="px-3 py-1.5 text-xs bg-gray-100 text-gray-500 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Children Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
@@ -267,13 +522,30 @@ export default function Dashboard() {
                   <p className="text-sm text-gray-600 italic mb-4">&quot;{child.bio}&quot;</p>
                 )}
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   <button className="flex-1 py-2 px-4 bg-orange-100 text-orange-700 rounded-lg font-medium hover:bg-orange-200 transition-colors">
                     View Profile
                   </button>
-                  <Link href={`/dashboard/find-friends?childId=${child.id}`} className="flex-1 py-2 px-4 bg-green-100 text-green-700 rounded-lg font-medium hover:bg-green-200 transition-colors text-center">
+                  <Link
+                    href={`/dashboard/find-friends?childId=${child.id}`}
+                    className="flex-1 py-2 px-4 bg-green-100 text-green-700 rounded-lg font-medium hover:bg-green-200 transition-colors text-center"
+                  >
                     Find Friends
                   </Link>
+                  <button
+                    onClick={() => {
+                      setPlaydatePreselectedChildId(child.id);
+                      setShowPlaydateModal(true);
+                    }}
+                    disabled={!approvedFriendships.some((f) => f.myChildId === child.id)}
+                    className={`flex-1 py-2 px-4 bg-purple-100 text-purple-700 rounded-lg font-medium transition-colors ${
+                      approvedFriendships.some((f) => f.myChildId === child.id)
+                        ? "hover:bg-purple-200"
+                        : "opacity-40 cursor-not-allowed"
+                    }`}
+                  >
+                    Playdate
+                  </button>
                 </div>
               </div>
             ))}
@@ -308,6 +580,18 @@ export default function Dashboard() {
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
         onChildAdded={fetchChildren}
+      />
+
+      <SchedulePlaydateModal
+        isOpen={showPlaydateModal}
+        onClose={() => {
+          setShowPlaydateModal(false);
+          setPlaydatePreselectedChildId(null);
+        }}
+        onPlaydateScheduled={fetchPlaydates}
+        preselectedChildId={playdatePreselectedChildId}
+        myChildren={children}
+        approvedFriendships={approvedFriendships}
       />
     </div>
   );
