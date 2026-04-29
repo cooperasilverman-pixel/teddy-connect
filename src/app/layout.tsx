@@ -25,7 +25,7 @@ const pacifico = Pacifico({
 });
 
 export const metadata: Metadata = {
-  title: "Teddy Connect - Where Kids Make Friends",
+  title: "Teddy Connect",
   description: "A safe, fun place for kids with communication challenges to connect and build friendships",
 };
 

@@ -42,6 +42,7 @@ function FindFriendsInner() {
   const [myChild, setMyChild] = useState<Child | null>(null);
   const [matches, setMatches] = useState<MatchedChild[]>([]);
   const [sendingId, setSendingId] = useState<string | null>(null);
+  const [sendError, setSendError] = useState<string | null>(null);
 
   const loadData = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -85,6 +86,7 @@ function FindFriendsInner() {
   const sendRequest = async (match: MatchedChild) => {
     if (!myChild) return;
     setSendingId(match.id);
+    setSendError(null);
 
     const { error } = await supabase.from("friendships").insert({
       child_id_1: myChild.id,
@@ -93,7 +95,9 @@ function FindFriendsInner() {
       status: "pending",
     });
 
-    if (!error) {
+    if (error) {
+      setSendError("Couldn't send request: " + error.message);
+    } else {
       setMatches((prev) => prev.map((m) => m.id === match.id ? { ...m, requestSent: true } : m));
     }
     setSendingId(null);
@@ -124,6 +128,12 @@ function FindFriendsInner() {
       <main className="max-w-5xl mx-auto px-6 py-10">
         <h1 className="text-2xl font-bold text-gray-800 mb-2">Friend Suggestions</h1>
         <p className="text-gray-500 mb-8">Matches are ranked by shared interests and communication style.</p>
+
+        {sendError && (
+          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm mb-6">
+            {sendError}
+          </div>
+        )}
 
         {matches.length === 0 ? (
           <div className="card text-center py-16">

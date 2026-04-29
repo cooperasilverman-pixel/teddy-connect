@@ -59,6 +59,43 @@ function formatTime(timeStr: string): string {
   return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
 }
 
+function downloadICS(playdate: Playdate) {
+  const [year, month, day] = playdate.scheduled_date.split("-").map(Number);
+  const [hour, minute] = playdate.scheduled_time.split(":").map(Number);
+
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const dtStart = `${year}${pad(month)}${pad(day)}T${pad(hour)}${pad(minute)}00`;
+  const endHour = hour + 1;
+  const dtEnd = `${year}${pad(month)}${pad(day)}T${pad(endHour)}${pad(minute)}00`;
+
+  const name1 = playdate.proposerChild?.display_name ?? "";
+  const name2 = playdate.inviteeChild?.display_name ?? "";
+  const summary = `Playdate: ${name1} & ${name2}`;
+  const location = playdate.location ?? "";
+
+  const ics = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//TeddyConnect//EN",
+    "BEGIN:VEVENT",
+    `DTSTART:${dtStart}`,
+    `DTEND:${dtEnd}`,
+    `SUMMARY:${summary}`,
+    location ? `LOCATION:${location}` : "",
+    "DESCRIPTION:Arranged through Teddy Connect",
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].filter(Boolean).join("\r\n");
+
+  const blob = new Blob([ics], { type: "text/calendar" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `playdate-${name1}-${name2}.ics`.replace(/\s+/g, "-").toLowerCase();
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -238,6 +275,7 @@ export default function Dashboard() {
       .update({ status, approved_at: status === "approved" ? new Date().toISOString() : null })
       .eq("id", requestId);
     await fetchPendingRequests();
+    await fetchApprovedFriendships();
     setRespondingId(null);
   };
 
@@ -305,7 +343,7 @@ export default function Dashboard() {
           </div>
           <div className="card bg-green-50 border border-green-100">
             <div className="text-3xl mb-2">🤝</div>
-            <div className="text-2xl font-bold text-gray-800">0</div>
+            <div className="text-2xl font-bold text-gray-800">{approvedFriendships.length}</div>
             <div className="text-gray-600">Total Friends</div>
           </div>
           <div className="card bg-blue-50 border border-blue-100">
@@ -436,15 +474,23 @@ export default function Dashboard() {
                         </p>
                       </div>
                     </div>
-                    {myChildIds.has(p.proposer_child_id) && (
+                    <div className="flex gap-2 flex-shrink-0">
                       <button
-                        onClick={() => respondToPlaydate(p.id, "cancelled")}
-                        disabled={respondingPlaydateId === p.id}
-                        className="px-3 py-1.5 text-xs bg-gray-100 text-gray-500 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+                        onClick={() => downloadICS(p)}
+                        className="px-3 py-1.5 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
                       >
-                        Cancel
+                        📅 Add to Calendar
                       </button>
-                    )}
+                      {myChildIds.has(p.proposer_child_id) && (
+                        <button
+                          onClick={() => respondToPlaydate(p.id, "cancelled")}
+                          disabled={respondingPlaydateId === p.id}
+                          className="px-3 py-1.5 text-xs bg-gray-100 text-gray-500 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+                        >
+                          Cancel
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
