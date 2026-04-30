@@ -8,7 +8,6 @@ import type { User } from "@supabase/supabase-js";
 import AddChildModal from "@/components/AddChildModal";
 import SchedulePlaydateModal from "@/components/SchedulePlaydateModal";
 import AppNav from "@/components/AppNav";
-import PageTransition from "@/components/PageTransition";
 
 interface Child {
   id: string;
@@ -348,7 +347,7 @@ export default function Dashboard() {
       <AppNav parentName={parentName} onLogout={handleLogout} />
 
       {/* Main Content */}
-      <PageTransition className="max-w-6xl mx-auto px-6 py-8 page-enter">
+      <main className="max-w-6xl mx-auto px-6 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">Family Dashboard</h1>
           <p className="text-gray-600 dark:text-gray-400">Manage your children&apos;s profiles and connections</p>
@@ -661,7 +660,7 @@ export default function Dashboard() {
             </button>
           </div>
         )}
-      </PageTransition>
+      </main>
 
       <AddChildModal
         isOpen={showAddModal}

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
 import AppNav from "@/components/AppNav";
-import PageTransition from "@/components/PageTransition";
 
 export default function ResourcesPage() {
   const router = useRouter();
@@ -43,7 +42,7 @@ export default function ResourcesPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       <AppNav parentName={parentName} onLogout={handleLogout} />
-      <PageTransition className="max-w-6xl mx-auto px-6 py-8 page-enter">
+      <main className="max-w-6xl mx-auto px-6 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">Resources</h1>
           <p className="text-gray-600 dark:text-gray-400">Helpful guides and activities for your family</p>
@@ -55,7 +54,7 @@ export default function ResourcesPage() {
             Tips, guides, and activities to support children with communication challenges — curated by our community.
           </p>
         </div>
-      </PageTransition>
+      </main>
     </div>
   );
 }
