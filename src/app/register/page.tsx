@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
@@ -77,8 +78,8 @@ export default function Register() {
       {/* Navigation */}
       <nav className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto w-full">
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-4xl">🧸</span>
-          <span className="text-2xl font-bold text-orange-600">Teddy Connect</span>
+          <Image src="/logo.png" alt="Teddy Connect" width={50} height={50} />
+          <span className="text-2xl font-bold text-green-600">Teddy Connect</span>
         </Link>
       </nav>
 
@@ -113,7 +114,7 @@ export default function Register() {
                 type="text"
                 value={formData.parentName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-green-400 focus:ring-2 focus:ring-green-100 outline-none transition-all"
                 placeholder="Your name"
                 required
               />
@@ -129,7 +130,7 @@ export default function Register() {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-green-400 focus:ring-2 focus:ring-green-100 outline-none transition-all"
                 placeholder="parent@email.com"
                 required
               />
@@ -145,7 +146,7 @@ export default function Register() {
                 type="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-green-400 focus:ring-2 focus:ring-green-100 outline-none transition-all"
                 placeholder="Create a strong password"
                 required
                 minLength={8}
@@ -162,7 +163,7 @@ export default function Register() {
                 type="password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-green-400 focus:ring-2 focus:ring-green-100 outline-none transition-all"
                 placeholder="Confirm your password"
                 required
               />
@@ -175,16 +176,16 @@ export default function Register() {
                   name="agreeToTerms"
                   checked={formData.agreeToTerms}
                   onChange={handleChange}
-                  className="w-5 h-5 mt-0.5 text-orange-500 rounded"
+                  className="w-5 h-5 mt-0.5 text-green-500 rounded"
                   required
                 />
                 <span className="text-sm text-gray-600 dark:text-gray-300">
                   I am the parent or legal guardian. I agree to the{" "}
-                  <Link href="/terms" className="text-orange-600 hover:underline">
+                  <Link href="/terms" className="text-green-600 hover:underline">
                     Terms of Service
                   </Link>{" "}
                   and{" "}
-                  <Link href="/privacy" className="text-orange-600 hover:underline">
+                  <Link href="/privacy" className="text-green-600 hover:underline">
                     Privacy Policy
                   </Link>
                   , and consent to creating an account for my child.
@@ -204,7 +205,7 @@ export default function Register() {
           <div className="mt-8 text-center">
             <p className="text-gray-600 dark:text-gray-400">
               Already have an account?{" "}
-              <Link href="/login" className="text-orange-600 font-medium hover:text-orange-700">
+              <Link href="/login" className="text-green-600 font-medium hover:text-green-700">
                 Log in
               </Link>
             </p>

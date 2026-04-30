@@ -72,7 +72,7 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8">
             {/* Step 1 */}
             <div className="card text-center">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl">👨‍👩‍👧</span>
               </div>
               <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Parents Sign Up</h3>

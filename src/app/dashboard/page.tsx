@@ -7,7 +7,7 @@ import { supabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
 import AddChildModal from "@/components/AddChildModal";
 import SchedulePlaydateModal from "@/components/SchedulePlaydateModal";
-import ThemeToggle from "@/components/ThemeToggle";
+import AppNav from "@/components/AppNav";
 
 interface Child {
   id: string;
@@ -344,20 +344,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      {/* Navigation */}
-      <nav className="bg-white dark:bg-gray-900 shadow-sm">
-        <div className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-3xl">🧸</span>
-            <span className="text-xl font-bold text-orange-600">Teddy Connect</span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <span className="text-gray-600 dark:text-gray-300">Hi, {parentName}</span>
-            <ThemeToggle />
-            <button onClick={handleLogout} className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">Log out</button>
-          </div>
-        </div>
-      </nav>
+      <AppNav parentName={parentName} onLogout={handleLogout} />
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-6 py-8">
@@ -368,7 +355,7 @@ export default function Dashboard() {
 
         {/* Quick Stats */}
         <div className="grid md:grid-cols-3 gap-4 mb-8">
-          <div className="card bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-900/30">
+          <div className="card bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-900/30">
             <div className="text-3xl mb-2">👧</div>
             <div className="text-2xl font-bold text-gray-800 dark:text-gray-100">{children.length}</div>
             <div className="text-gray-600 dark:text-gray-400">Children</div>
@@ -496,9 +483,9 @@ export default function Dashboard() {
                       </div>
                       <div>
                         <p className="font-medium text-gray-800 dark:text-gray-100">
-                          <span className="text-orange-600">{p.proposerChild?.display_name}</span>
+                          <span className="text-green-600">{p.proposerChild?.display_name}</span>
                           {" & "}
-                          <span className="text-orange-600">{p.inviteeChild?.display_name}</span>
+                          <span className="text-green-600">{p.inviteeChild?.display_name}</span>
                         </p>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
                           {formatDate(p.scheduled_date)} at {formatTime(p.scheduled_time)}
@@ -594,7 +581,7 @@ export default function Dashboard() {
             {children.map((child) => (
               <div key={child.id} className="card hover:shadow-lg transition-shadow">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-4xl">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-4xl">
                     {child.avatar}
                   </div>
                   <div>
@@ -622,7 +609,7 @@ export default function Dashboard() {
                 )}
 
                 <div className="flex gap-2 flex-wrap">
-                  <button className="flex-1 py-2 px-4 bg-orange-100 text-orange-700 rounded-lg font-medium hover:bg-orange-200 transition-colors">
+                  <button className="flex-1 py-2 px-4 bg-green-100 text-green-700 rounded-lg font-medium hover:bg-green-200 transition-colors">
                     View Profile
                   </button>
                   <Link

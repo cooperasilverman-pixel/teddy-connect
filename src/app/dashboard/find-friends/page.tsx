@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useState, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import type { User } from "@supabase/supabase-js";
+import AppNav from "@/components/AppNav";
 
 interface Child {
   id: string;
@@ -38,50 +40,65 @@ function FindFriendsInner() {
   const searchParams = useSearchParams();
   const childId = searchParams.get("childId");
 
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [myChildren, setMyChildren] = useState<Child[]>([]);
+  const [selectedChildId, setSelectedChildId] = useState<string | null>(null);
   const [myChild, setMyChild] = useState<Child | null>(null);
   const [matches, setMatches] = useState<MatchedChild[]>([]);
   const [sendingId, setSendingId] = useState<string | null>(null);
   const [sendError, setSendError] = useState<string | null>(null);
 
-  const loadData = useCallback(async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { router.push("/login"); return; }
-    if (!childId) { router.push("/dashboard"); return; }
+  const resolvedChildId = childId ?? selectedChildId;
 
-    // Fetch the selected child
+  useEffect(() => {
+    const init = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { router.push("/login"); return; }
+      setUser(user);
+      if (!childId) {
+        const { data } = await supabase.from("children").select("*").eq("user_id", user.id);
+        setMyChildren(data ?? []);
+      }
+      setLoading(false);
+    };
+    init();
+  }, [router, childId]);
+
+  const loadMatchData = useCallback(async (activeChildId: string, userId: string) => {
     const { data: selected } = await supabase
       .from("children")
       .select("*")
-      .eq("id", childId)
-      .eq("user_id", user.id)
+      .eq("id", activeChildId)
+      .eq("user_id", userId)
       .single();
 
-    if (!selected) { router.push("/dashboard"); return; }
+    if (!selected) return;
     setMyChild(selected);
 
-    // Fetch all children from other families
     const { data: others } = await supabase
       .from("children")
       .select("*")
-      .neq("user_id", user.id);
+      .neq("user_id", userId);
 
-    // Fetch existing friendships involving this child
     const { data: friendships } = await supabase
       .from("friendships")
       .select("child_id_1, child_id_2")
-      .or(`child_id_1.eq.${childId},child_id_2.eq.${childId}`);
+      .or(`child_id_1.eq.${activeChildId},child_id_2.eq.${activeChildId}`);
 
     const excludedIds = new Set<string>();
     (friendships ?? []).forEach((f) => {
-      excludedIds.add(f.child_id_1 === childId ? f.child_id_2 : f.child_id_1);
+      excludedIds.add(f.child_id_1 === activeChildId ? f.child_id_2 : f.child_id_1);
     });
 
     setMatches(computeMatches(selected, others ?? [], excludedIds));
-    setLoading(false);
-  }, [childId, router]);
+  }, []);
 
-  useEffect(() => { loadData(); }, [loadData]);
+  useEffect(() => {
+    if (user && resolvedChildId) {
+      loadMatchData(resolvedChildId, user.id);
+    }
+  }, [user, resolvedChildId, loadMatchData]);
 
   const sendRequest = async (match: MatchedChild) => {
     if (!myChild) return;
@@ -103,31 +120,87 @@ function FindFriendsInner() {
     setSendingId(null);
   };
 
+  const parentName = user?.user_metadata?.parent_name || user?.email?.split("@")[0] || "Parent";
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/");
+  };
+
   if (loading) return null;
+
+  if (!resolvedChildId) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+        <AppNav parentName={parentName} onLogout={handleLogout} />
+        <main className="max-w-5xl mx-auto px-6 py-10">
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">Find Friends</h1>
+          <p className="text-gray-500 mb-8">Who is looking for friends today?</p>
+          {myChildren.length === 0 ? (
+            <div className="card text-center py-16">
+              <div className="text-5xl mb-4">👶</div>
+              <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">No children yet</h2>
+              <p className="text-gray-500 mb-6">Add a child profile on the dashboard first.</p>
+              <Link href="/dashboard" className="btn-primary py-3 px-6">Go to Dashboard</Link>
+            </div>
+          ) : (
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {myChildren.map((child) => (
+                <button
+                  key={child.id}
+                  onClick={() => setSelectedChildId(child.id)}
+                  className="card text-center hover:shadow-lg transition-shadow cursor-pointer"
+                >
+                  <div className="text-5xl mb-3">{child.avatar}</div>
+                  <h3 className="font-bold text-gray-800 dark:text-gray-100">{child.display_name}</h3>
+                  <p className="text-sm text-gray-500">{child.age} years old</p>
+                </button>
+              ))}
+            </div>
+          )}
+        </main>
+      </div>
+    );
+  }
+
+  if (!myChild) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+        <AppNav parentName={parentName} onLogout={handleLogout} />
+        <div className="flex items-center justify-center py-32">
+          <div className="text-center">
+            <div className="text-4xl mb-4">🧸</div>
+            <p className="text-gray-600">Finding friends...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen gradient-warm">
-      {/* Nav */}
-      <nav className="bg-white dark:bg-gray-900 shadow-sm">
-        <div className="flex items-center gap-4 px-6 py-4 max-w-5xl mx-auto">
-          <Link href="/dashboard" className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 text-sm font-medium">
-            ← Back
-          </Link>
-          {myChild && (
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">{myChild.avatar}</span>
-              <div>
-                <p className="font-bold text-gray-800 dark:text-gray-100">Finding friends for {myChild.display_name}</p>
-                <p className="text-xs text-gray-500">{myChild.age} years old</p>
-              </div>
-            </div>
-          )}
-        </div>
-      </nav>
+      <AppNav parentName={parentName} onLogout={handleLogout} />
 
       <main className="max-w-5xl mx-auto px-6 py-10">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">Friend Suggestions</h1>
-        <p className="text-gray-500 mb-8">Matches are ranked by shared interests and communication style.</p>
+        <div className="flex items-center gap-4 mb-8">
+          <div className="flex items-center gap-3">
+            <span className="text-3xl">{myChild.avatar}</span>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+                Friends for {myChild.display_name}
+              </h1>
+              <p className="text-sm text-gray-500">Matches ranked by shared interests and communication style</p>
+            </div>
+          </div>
+          {!childId && (
+            <button
+              onClick={() => { setSelectedChildId(null); setMyChild(null); setMatches([]); }}
+              className="ml-auto text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            >
+              ← Switch child
+            </button>
+          )}
+        </div>
 
         {sendError && (
           <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm mb-6">
@@ -151,7 +224,7 @@ function FindFriendsInner() {
                 <div key={match.id} className="card flex flex-col gap-4">
                   {/* Header */}
                   <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-4xl flex-shrink-0">
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-4xl flex-shrink-0">
                       {match.avatar}
                     </div>
                     <div className="flex-1 min-w-0">

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
@@ -43,8 +44,8 @@ export default function Login() {
       {/* Navigation */}
       <nav className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto w-full">
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-4xl">🧸</span>
-          <span className="text-2xl font-bold text-orange-600">Teddy Connect</span>
+          <Image src="/logo.png" alt="Teddy Connect" width={50} height={50} />
+          <span className="text-2xl font-bold text-green-600">Teddy Connect</span>
         </Link>
       </nav>
 
@@ -72,7 +73,7 @@ export default function Login() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-green-400 focus:ring-2 focus:ring-green-100 outline-none transition-all"
                 placeholder="parent@email.com"
                 required
               />
@@ -87,7 +88,7 @@ export default function Login() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-green-400 focus:ring-2 focus:ring-green-100 outline-none transition-all"
                 placeholder="Your password"
                 required
               />
@@ -95,10 +96,10 @@ export default function Login() {
 
             <div className="flex items-center justify-between">
               <label className="flex items-center">
-                <input type="checkbox" className="w-4 h-4 text-orange-500 rounded" />
+                <input type="checkbox" className="w-4 h-4 text-green-500 rounded" />
                 <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Remember me</span>
               </label>
-              <Link href="/forgot-password" className="text-sm text-orange-600 hover:text-orange-700">
+              <Link href="/forgot-password" className="text-sm text-green-600 hover:text-green-700">
                 Forgot password?
               </Link>
             </div>
@@ -115,7 +116,7 @@ export default function Login() {
           <div className="mt-8 text-center">
             <p className="text-gray-600 dark:text-gray-400">
               Don&apos;t have an account?{" "}
-              <Link href="/register" className="text-orange-600 font-medium hover:text-orange-700">
+              <Link href="/register" className="text-green-600 font-medium hover:text-green-700">
                 Sign up free
               </Link>
             </p>
