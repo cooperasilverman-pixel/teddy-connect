@@ -19,10 +19,14 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-lg"
       aria-label="Toggle dark mode"
+      className={`relative flex items-center w-14 h-7 rounded-full transition-colors duration-300 focus:outline-none ${
+        dark ? "bg-indigo-500" : "bg-gray-300"
+      }`}
     >
-      {dark ? "☀️" : "🌙"}
+      <span className={`absolute left-1 text-sm transition-transform duration-300 ${dark ? "translate-x-7" : "translate-x-0"}`}>
+        {dark ? "🌙" : "☀️"}
+      </span>
     </button>
   );
 }

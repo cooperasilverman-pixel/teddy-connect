@@ -10,11 +10,15 @@
   --accent: #e53935;
   --pink: #fbb6ce;
   --purple: #b794f4;
+  --brand-red: #C41E3A;
+  --brand-red-dark: #a01830;
 }
 
 .dark {
   --background: #0f172a;
   --foreground: #f1f5f9;
+  --brand-red: #6366f1;
+  --brand-red-dark: #4f46e5;
 }
 
 @theme inline {
@@ -65,8 +69,27 @@ body {
   box-shadow: 0 6px 20px rgba(106, 191, 75, 0.5);
 }
 
+.btn-green {
+  background-color: #22c55e;
+}
+
+.btn-green:hover {
+  background-color: #16a34a;
+}
+
+.dark .btn-primary,
+.dark .btn-green {
+  background: linear-gradient(135deg, #4A0A14 0%, #4A0A14 100%) !important;
+  box-shadow: 0 4px 14px rgba(139, 26, 42, 0.4) !important;
+}
+
+.dark .btn-primary:hover,
+.dark .btn-green:hover {
+  box-shadow: 0 6px 20px rgba(139, 26, 42, 0.5) !important;
+}
+
 .btn-secondary {
-  background: linear-gradient(135deg, #C41E3A 0%, #a01830 100%);
+  background: linear-gradient(135deg, var(--brand-red) 0%, var(--brand-red-dark) 100%);
   color: white;
   padding: 0.75rem 2rem;
   border-radius: 9999px;
@@ -120,7 +143,7 @@ body {
   top: 0.05em;
   right: -0.15em;
   font-size: 0.35em;
-  color: #C41E3A;
+  color: var(--brand-red);
   transform: rotate(25deg);
   display: block;
 }

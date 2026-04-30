@@ -1,16 +1,20 @@
 import Link from "next/link";
 import Image from "next/image";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Home() {
   return (
     <div className="min-h-screen gradient-warm">
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
       {/* Navigation */}
       <nav className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo.webp" alt="Teddy Connect" width={50} height={50} className="mix-blend-multiply" />
+          <Image src="/logo.png" alt="Teddy Connect" width={50} height={50} className="dark:drop-shadow-[0_0_12px_rgba(99,102,241,0.7)]" />
         </Link>
-        <div className="flex gap-4">
-          <Link href="/login" className="px-4 py-2 text-green-600 font-medium hover:text-green-700">
+        <div className="flex items-center gap-4">
+          <Link href="/login" className="px-4 py-2 text-green-600 dark:text-indigo-400 font-medium hover:text-green-700 dark:hover:text-indigo-300">
             Log In
           </Link>
           <Link href="/register" className="btn-primary">
@@ -26,7 +30,7 @@ export default function Home() {
           <div className="flex-1 text-center lg:text-left">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 dark:text-gray-100 leading-tight mb-6">
               Staying Connected Through the
-              <span style={{ color: '#C41E3A', fontFamily: 'var(--font-pacifico)' }}> Comfort of Tedd<span className="teddy-heart">y</span></span>
+              <span style={{ color: 'var(--brand-red)', fontFamily: 'var(--font-pacifico)' }}> Comfort of Tedd<span className="teddy-heart">y</span></span>
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-xl">
               Teddy Connect helps kids with communication challenges find friends
@@ -37,7 +41,7 @@ export default function Home() {
               <Link href="/register" className="btn-primary text-lg px-8 py-4">
                 Get Started - It&apos;s Free
               </Link>
-              <Link href="#how-it-works" className="text-lg px-8 py-4 font-semibold text-white rounded-full" style={{ background: 'linear-gradient(135deg, #C41E3A 0%, #a01830 100%)' }}>
+              <Link href="#how-it-works" className="text-lg px-8 py-4 font-semibold text-white rounded-full" style={{ background: 'linear-gradient(135deg, var(--brand-red) 0%, var(--brand-red-dark) 100%)' }}>
                 Learn More
               </Link>
             </div>
@@ -49,7 +53,7 @@ export default function Home() {
           {/* Right side - Logo */}
           <div className="flex-1 relative">
             <div className="relative w-[500px] h-[500px] mx-auto flex items-center justify-center">
-              <Image src="/logo.webp" alt="Teddy Connect" width={600} height={600} className="mix-blend-multiply" quality={100} unoptimized />
+              <Image src="/logo.png" alt="Teddy Connect" width={600} height={600} className="dark:drop-shadow-[0_0_60px_rgba(99,102,241,0.5)]" quality={100} unoptimized />
             </div>
           </div>
         </div>
@@ -161,7 +165,7 @@ export default function Home() {
       {/* CTA Section */}
       <section className="py-20 bg-white dark:bg-gray-900">
         <div className="max-w-3xl mx-auto px-6 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">
             Ready to Help Your Child Make Friends?
           </h2>
           <p className="text-gray-600 mb-8">

@@ -413,7 +413,7 @@ export default function Dashboard() {
                     <button
                       onClick={() => respondToRequest(req.id, "approved")}
                       disabled={respondingId === req.id}
-                      className="px-4 py-2 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 transition-colors disabled:opacity-50"
+                      className="btn-green px-4 py-2 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
                     >
                       Approve
                     </button>
@@ -467,7 +467,7 @@ export default function Dashboard() {
                       <button
                         onClick={() => respondToPlaydate(p.id, "confirmed")}
                         disabled={respondingPlaydateId === p.id}
-                        className="px-4 py-2 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 transition-colors disabled:opacity-50"
+                        className="btn-green px-4 py-2 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
                       >
                         Confirm
                       </button>
