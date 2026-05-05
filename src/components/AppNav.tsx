@@ -8,15 +8,17 @@ import ThemeToggle from "@/components/ThemeToggle";
 interface AppNavProps {
   parentName: string;
   onLogout: () => void;
+  avatarUrl?: string | null;
 }
 
 const TABS = [
   { label: "Home", href: "/dashboard" },
   { label: "Find Friends", href: "/dashboard/find-friends" },
   { label: "Resources", href: "/dashboard/resources" },
+  { label: "Account", href: "/dashboard/account" },
 ];
 
-export default function AppNav({ parentName, onLogout }: AppNavProps) {
+export default function AppNav({ parentName, onLogout, avatarUrl }: AppNavProps) {
   const pathname = usePathname();
 
   const isActive = (href: string) =>
@@ -30,6 +32,16 @@ export default function AppNav({ parentName, onLogout }: AppNavProps) {
           <span className="text-xl font-bold text-green-600">Teddy Connect</span>
         </Link>
         <div className="flex items-center gap-4">
+          {avatarUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={avatarUrl} alt="" className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
+          ) : (
+            <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/40 flex items-center justify-center flex-shrink-0">
+              <span className="text-xs font-bold text-green-700 dark:text-green-400">
+                {parentName.charAt(0).toUpperCase()}
+              </span>
+            </div>
+          )}
           <span className="text-gray-600 dark:text-gray-300">Hi, {parentName}</span>
           <ThemeToggle />
           <button

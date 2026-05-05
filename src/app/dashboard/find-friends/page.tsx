@@ -121,6 +121,7 @@ function FindFriendsInner() {
   };
 
   const parentName = user?.user_metadata?.parent_name || user?.email?.split("@")[0] || "Parent";
+  const avatarUrl = user?.user_metadata?.avatar_url ?? null;
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -132,7 +133,7 @@ function FindFriendsInner() {
   if (!resolvedChildId) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-        <AppNav parentName={parentName} onLogout={handleLogout} />
+        <AppNav parentName={parentName} onLogout={handleLogout} avatarUrl={avatarUrl} />
         <main className="max-w-5xl mx-auto px-6 py-10">
           <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">Find Friends</h1>
           <p className="text-gray-500 mb-8">Who is looking for friends today?</p>
@@ -166,7 +167,7 @@ function FindFriendsInner() {
   if (!myChild) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-        <AppNav parentName={parentName} onLogout={handleLogout} />
+        <AppNav parentName={parentName} onLogout={handleLogout} avatarUrl={avatarUrl} />
         <div className="flex items-center justify-center py-32">
           <div className="text-center">
             <div className="text-4xl mb-4">🧸</div>
@@ -179,7 +180,7 @@ function FindFriendsInner() {
 
   return (
     <div className="min-h-screen gradient-warm">
-      <AppNav parentName={parentName} onLogout={handleLogout} />
+      <AppNav parentName={parentName} onLogout={handleLogout} avatarUrl={avatarUrl} />
 
       <main className="max-w-5xl mx-auto px-6 py-10">
         <div className="flex items-center gap-4 mb-8">

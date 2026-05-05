@@ -332,6 +332,7 @@ export default function Dashboard() {
   }
 
   const parentName = user?.user_metadata?.parent_name || user?.email?.split("@")[0] || "Parent";
+  const avatarUrl = user?.user_metadata?.avatar_url ?? null;
   const myChildIds = new Set(children.map((c) => c.id));
 
   const pendingReceivedPlaydates = playdates.filter(
@@ -344,7 +345,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      <AppNav parentName={parentName} onLogout={handleLogout} />
+      <AppNav parentName={parentName} onLogout={handleLogout} avatarUrl={avatarUrl} />
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-6 py-8">

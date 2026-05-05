@@ -38,10 +38,11 @@ export default function ResourcesPage() {
   }
 
   const parentName = user?.user_metadata?.parent_name || user?.email?.split("@")[0] || "Parent";
+  const avatarUrl = user?.user_metadata?.avatar_url ?? null;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      <AppNav parentName={parentName} onLogout={handleLogout} />
+      <AppNav parentName={parentName} onLogout={handleLogout} avatarUrl={avatarUrl} />
       <main className="max-w-6xl mx-auto px-6 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">Resources</h1>

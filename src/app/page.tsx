@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import ThemeToggle from "@/components/ThemeToggle";
+import HomeNav from "@/components/HomeNav";
 
 export default function Home() {
   return (
@@ -14,12 +15,7 @@ export default function Home() {
           <Image src="/logo.png" alt="Teddy Connect" width={50} height={50} className="dark:drop-shadow-[0_0_12px_rgba(99,102,241,0.7)]" />
         </Link>
         <div className="flex items-center gap-4">
-          <Link href="/login" className="px-4 py-2 text-green-600 dark:text-indigo-400 font-medium hover:text-green-700 dark:hover:text-indigo-300">
-            Log In
-          </Link>
-          <Link href="/register" className="btn-primary">
-            Sign Up
-          </Link>
+          <HomeNav />
         </div>
       </nav>
 
