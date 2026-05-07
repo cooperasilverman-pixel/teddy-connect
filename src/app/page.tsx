@@ -1,20 +1,18 @@
 import Link from "next/link";
 import Image from "next/image";
-import ThemeToggle from "@/components/ThemeToggle";
 import HomeNav from "@/components/HomeNav";
+import ThemeToggleWrapper from "@/components/ThemeToggleWrapper";
 
 export default function Home() {
   return (
     <div className="min-h-screen gradient-warm">
-      <div className="fixed top-4 right-4 z-50">
-        <ThemeToggle />
-      </div>
       {/* Navigation */}
       <nav className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto">
         <Link href="/" className="flex items-center gap-2">
           <Image src="/logo.png" alt="Teddy Connect" width={50} height={50} className="dark:drop-shadow-[0_0_12px_rgba(99,102,241,0.7)]" />
         </Link>
         <div className="flex items-center gap-4">
+          <ThemeToggleWrapper />
           <HomeNav />
         </div>
       </nav>

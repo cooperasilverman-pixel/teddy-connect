@@ -75,8 +75,8 @@ export default function AccountPage() {
       setPhotoError("Please select an image file.");
       return;
     }
-    if (file.size > 5 * 1024 * 1024) {
-      setPhotoError("Image must be under 5 MB.");
+    if (file.size > 20 * 1024 * 1024) {
+      setPhotoError("Image must be under 20 MB.");
       return;
     }
 
@@ -207,7 +207,7 @@ export default function AccountPage() {
 
             <div className="space-y-1">
               <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Profile Photo</p>
-              <p className="text-xs text-gray-400">JPG, PNG or GIF · max 5 MB</p>
+              <p className="text-xs text-gray-400">JPG, PNG or GIF · max 20 MB</p>
               {isUploadingPhoto && <p className="text-xs text-green-600 font-medium">Uploading…</p>}
               {photoError && <p className="text-xs text-red-500">{photoError}</p>}
               {avatarUrl && !isUploadingPhoto && (
