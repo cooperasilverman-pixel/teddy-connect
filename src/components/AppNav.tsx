@@ -15,6 +15,7 @@ const TABS = [
   { label: "Home", href: "/dashboard" },
   { label: "Find Friends", href: "/dashboard/find-friends" },
   { label: "Resources", href: "/dashboard/resources" },
+  { label: "Community Forum", href: "/dashboard/community-forum" },
   { label: "Account", href: "/dashboard/account" },
 ];
 
